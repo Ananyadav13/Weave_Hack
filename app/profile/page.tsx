@@ -1,4 +1,4 @@
-// src/app/profile/page.tsx
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -19,7 +19,6 @@ export default function ProfilePage() {
     setMounted(true);
   }, []);
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -42,7 +41,6 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-sky-50 via-indigo-50 to-blue-100 dark:from-blue-950 dark:via-indigo-950 dark:to-slate-900">
       <div className="container max-w-3xl mx-auto py-12 px-4">
-        {/* Header with theme toggle */}
         <div className="flex justify-between items-center mb-12">
           <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">Your profile</h1>
           {mounted && (
@@ -67,7 +65,6 @@ export default function ProfilePage() {
           animate="visible"
           className="space-y-8"
         >
-          {/* Profile header with backdrop blur */}
           <motion.div 
             variants={itemVariants}
             className="relative backdrop-blur-md bg-white/30 dark:bg-slate-900/30 rounded-2xl p-6 shadow-lg overflow-hidden border border-white/20 dark:border-slate-800/30"
@@ -110,7 +107,6 @@ export default function ProfilePage() {
             </div>
           </motion.div>
           
-          {/* Main Content Section with Glass Morphism */}
           <motion.div
             variants={itemVariants}
             className="backdrop-blur-md bg-white/30 dark:bg-slate-900/30 rounded-2xl shadow-lg overflow-hidden border border-white/20 dark:border-slate-800/30"

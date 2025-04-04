@@ -2,27 +2,26 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
-import { Bell, User, Moon, Sun, ChevronRight, Star, Clock, Shield, Users, Trophy, Grid, List } from "lucide-react";
-import { useTheme } from "next-themes";
+import {  Star, Clock, Shield, Users, Trophy, Grid, List } from "lucide-react";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
+
 import { Navbar } from '@/components/Navbar';
 
 export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
-  const { theme, setTheme } = useTheme();
+ 
   
-  // Set initial state
+ 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Sample data
   const username = "Alex";
   const matches = [
     {
@@ -126,7 +125,7 @@ export default function Dashboard() {
           {/* Welcome Section */}
           <motion.section variants={itemVariants} className="mb-6">
             <h1 className="text-2xl font-bold text-gray-800 mb-2">Good evening, {username}</h1>
-            <p className="text-gray-600">Here's what's happening in your world</p>
+            <p className="text-gray-600">Here is what is happening in your world</p>
           </motion.section>
 
           {/* Filter Categories */}

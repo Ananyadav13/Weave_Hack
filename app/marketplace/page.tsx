@@ -2,19 +2,14 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Search, Bell, MessageCircle, Globe, ChevronLeft } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Navbar } from '@/components/Navbar'; // Make sure to update the import path
+import { Navbar } from '@/components/Navbar'; 
 
 export default function Marketplace() {
   const [selectedTab, setSelectedTab] = useState("all");
   const [viewMode, setViewMode] = useState("grid");
 
-  // Define routes for the navbar
   const routes = [
     { name: "Dashboard", path: "/" },
     { name: "Marketplace", path: "/marketplace" },

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Menu, X, Search, Bell, LogOut, UserCircle, Moon, Sun } from "lucide-react";
+import { Menu, X, Search, Bell, LogOut, UserCircle, Moon, Sun, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,6 +16,8 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
+import { title } from "process";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -25,6 +27,7 @@ export function Navbar() {
   const { signOut } = useClerk();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const [userTokens, setUserTokens] = useState(1250); // Default value, replace with your actual token fetching logic
 
   // Handle scroll effect
   useEffect(() => {
@@ -36,11 +39,20 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Example: Fetch user tokens when user data is available
+  useEffect(() => {
+    if (isSignedIn && user) {
+      // Replace this with your actual token fetching logic
+      // fetchUserTokens(user.id).then(tokens => setUserTokens(tokens));
+    }
+  }, [isSignedIn, user]);
+
   const navLinks = [
     { title: "Dashboard", href: "/dashboard" },
     { title: "Request Skill", href: "/request" },
     { title: "Search Skills", href: "/marketplace" },
     { title: "Messages", href: "/gemini" },
+    { title: "Submit", href: "/portal" },
   ];
 
   return (
@@ -60,7 +72,7 @@ export function Navbar() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <span className="text-xl font-bold text-purple-600">Weave</span>
+          <span className="text-xl font-bold text-purple-600 cursor-pointer" onClick={()=>{router.push("/")}}>Weave</span>
         </motion.div>
 
         {/* Desktop Navigation */}
@@ -87,6 +99,26 @@ export function Navbar() {
 
         {/* Right menu - desktop */}
         <div className="hidden md:flex items-center space-x-4">
+          {/* Tokens Component */}
+          {isSignedIn && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    className="flex items-center bg-purple-50 px-3 py-1.5 rounded-full border border-purple-200 cursor-pointer dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <Coins className="h-4 w-4 text-purple-600 mr-1.5 dark:text-purple-400" />
+                    <span className="text-sm font-medium text-purple-700 dark:text-purple-300">{userTokens}</span>
+                  </motion.div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Your available tokens</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+          
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="relative"
@@ -164,7 +196,6 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <div className="flex items-center space-x-2">
-              
               <motion.div whileHover={{ scale: 1.05 }}>
                 <Button
                   onClick={() => router.push("/sign-in")}
@@ -201,6 +232,22 @@ export function Navbar() {
           transition={{ duration: 0.3 }}
         >
           <div className="px-4 pt-2 pb-3 space-y-1 border-t dark:border-gray-800">
+            {/* Mobile Tokens Display */}
+            {isSignedIn && (
+              <motion.div
+                className="flex items-center bg-purple-50 px-3 py-2 my-2 rounded-lg border border-purple-200 dark:bg-gray-800 dark:border-gray-700"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Coins className="h-5 w-5 text-purple-600 mr-2 dark:text-purple-400" />
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-purple-700 dark:text-purple-300">{userTokens} tokens</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Available balance</span>
+                </div>
+              </motion.div>
+            )}
+
             {navLinks.map((link) => (
               <motion.a
                 key={link.title}

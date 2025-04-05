@@ -31,7 +31,7 @@ export default function Dashboard() {
       rating: 4.8,
       skill: "Marketing strategy",
       description: "I can help you with your marketing strategy. I'm a marketing professional with 5+ years of experience.",
-      avatarUrl: "/api/placeholder/400/400"
+      avatarUrl: "https://ik.imagekit.io/zues/Gemini_Generated_Image_avayusavayusavay.jpeg?updatedAt=1743887136960"
     },
     {
       id: 2,
@@ -39,7 +39,7 @@ export default function Dashboard() {
       rating: 4.7,
       skill: "UX/UI design",
       description: "I can help you with your UI/UX design. I'm a designer with 5+ years of experience.",
-      avatarUrl: "/api/placeholder/400/400"
+      avatarUrl: "https://ik.imagekit.io/zues/image.png?updatedAt=1743887304237"
     }
   ];
   
@@ -48,14 +48,14 @@ export default function Dashboard() {
       id: 1,
       skill: "Copywriting",
       description: "I need help with writing copy for my website. I'm looking for someone with experience in marketing and branding.",
-      logoUrl: "/api/placeholder/400/400",
+      logoUrl: "https://ik.imagekit.io/zues/image.png?updatedAt=1743887382559",
       postedDays: 2
     },
     {
       id: 2,
       skill: "Market research",
       description: "I'm conducting a market research study and need help with data analysis. I'm looking for someone with experience in statistics and research methods.",
-      logoUrl: "/api/placeholder/400/400",
+      logoUrl: "https://ik.imagekit.io/zues/image.png",
       postedDays: 5
     }
   ];
@@ -67,7 +67,7 @@ export default function Dashboard() {
     { label: "Total matches", value: "12", icon: <Users className="h-5 w-5" /> }
   ];
   
-  const userSkills = ["Marketing", "UX/UI design", "Copywriting", "Market research", "Data analysis", "Statistics"];
+  const userSkills = ["Marketing", "UX/UI design"];
 
   // Define routes for the navbar
   const routes = [
@@ -347,7 +347,7 @@ export default function Dashboard() {
                       <div className="flex justify-between items-center mb-3">
                         <p className="text-sm font-medium text-gray-700 flex items-center">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-indigo-600"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
-                          75% profile completion
+                          50% profile completion
                         </p>
                       </div>
                       <motion.div
@@ -384,7 +384,7 @@ export default function Dashboard() {
                 <ProfileCompletionCard 
                   username={username}
                   avatarUrl="/api/placeholder/400/400"
-                  completionPercentage={75}
+                  completionPercentage={50}
                   rating={4.7}
                   matchesCount={12}
                   skills={userSkills}

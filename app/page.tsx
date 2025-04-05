@@ -97,12 +97,12 @@ export default function HomePage() {
           <div className="aspect-video max-w-5xl mx-auto relative rounded-3xl shadow-xl overflow-hidden border-4 border-white dark:border-violet-900">
             <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-indigo-600/20 mix-blend-overlay z-10 rounded-3xl"></div>
             <Image
-              src="/api/placeholder/1200/675"
+              src="https://ik.imagekit.io/zues/image.png?updatedAt=1743887998814"
               alt="Team Collaboration"
               fill
               className="object-cover"
               priority
-              sizes="(max-width: 768px) 100vw, 80vw"
+              sizes="(max-width: 768px) 100vw, 100vw"
             />
           </div>
           <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-white dark:bg-violet-900 px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
@@ -189,10 +189,10 @@ export default function HomePage() {
             <div className="flex-1 relative aspect-square w-full max-w-md">
               <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-3xl"></div>
               <Image
-                src="/api/placeholder/500/500"
+                src="https://ik.imagekit.io/zues/image.png?updatedAt=1743888144354"
                 alt="Work Illustration"
                 fill
-                className="object-contain p-8"
+                className="object-contain p-8 border-4 border-white/20 rounded-3xl"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
@@ -235,7 +235,7 @@ export default function HomePage() {
             <div className="relative w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 p-1">
               <div className="rounded-full overflow-hidden h-full w-full relative">
                 <Image
-                  src="/api/placeholder/128/128"
+                  src="https://ik.imagekit.io/zues/avatar.png"
                   alt="Happy User"
                   fill
                   className="rounded-full object-cover"

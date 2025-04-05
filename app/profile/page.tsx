@@ -16,7 +16,6 @@ export default function ProfilePage() {
  // Import useRouter
   
  const router = useRouter();
- 
   const { user } = useUser(); // Fetch user data from Clerk
   const [completionPercentage] = useState<number>(33);
   const [mounted, setMounted] = useState<boolean>(false);

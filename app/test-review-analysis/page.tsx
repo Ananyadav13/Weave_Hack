@@ -1,57 +1,81 @@
-// app/test-review-analysis/page.tsx
 'use client';
-
-import React, { useEffect } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 import ProviderReviewAnalysis from '@/components/ProviderReviewAnalysis';
-import { ReviewData } from '@/lib/review-analysis';
 
-const TestReviewAnalysisPage = () => {
-  // Accessing NEXT_PUBLIC_GEMINI_API_KEY on the client-side
-  const nextPublicGeminiApiKeyClient = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-  useEffect(() => {
-    console.log('NEXT_PUBLIC_GEMINI_API_KEY (test page - client-side):', nextPublicGeminiApiKeyClient ? 'Present' : 'Not Found');
-    // You would typically NOT log your API key in a real application.
-    // This is for demonstration purposes only.
-  }, [nextPublicGeminiApiKeyClient]);
+const initialReviews = [
+  {
+    content: 'Excellent service and fast response!',
+    rating: 5,
+    date: new Date().toISOString(),
+    reviewerId: 'user-123'
+  },
+  {
+    content: 'Good quality but delayed delivery',
+    rating: 3,
+    date: new Date().toISOString(),
+    reviewerId: 'user-456'
+  }
+];
 
-  // Fixed initialReviews: string dates will be converted to Date objects in the API route
-  const initialReviews = [
-    {
-      content: 'The service was excellent and delivered on time!',
-      rating: 5,
-      date: '2025-04-01',
-      reviewerId: 'user1',
-    },
-    {
-      content: 'Communication could have been better, but the quality was good.',
-      rating: 4,
-      date: '2025-03-25',
-      reviewerId: 'user2',
-    },
-    {
-      content: 'Not satisfied with the outcome, it didn\'t meet my expectations.',
-      rating: 2,
-      date: '2025-03-15',
-      reviewerId: 'user3',
-    },
-  ];
-
-  // Fixed: Properly typing the empty array
-  const emptyReviews: any[] = [];
-
+export default function TestPage() {
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Test Provider Review Analysis Component</h1>
-      <div style={{ marginBottom: '30px' }}>
-        <h2>With Initial Reviews:</h2>
-        <ProviderReviewAnalysis providerId="testProvider1" initialReviews={initialReviews} />
-      </div>
-      <div>
-        <h2>Without Initial Reviews:</h2>
-        <ProviderReviewAnalysis providerId="testProvider2" initialReviews={emptyReviews} />
+    <div className="min-h-screen p-4 sm:p-8 bg-gradient-to-br from-purple-50 via-indigo-50 to-purple-100">
+      <div className="w-full max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-4xl mx-auto space-y-8">
+        {/* Page Header */}
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-8"
+        >
+          <h1 className="text-3xl md:text-4xl font-bold text-purple-800">Review Analysis</h1>
+          <p className="text-purple-600 mt-2">Provider performance insights</p>
+        </motion.div>
+        
+        {/* Main Content */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="p-6 md:p-8 bg-white rounded-xl shadow-lg border border-purple-100 backdrop-blur-sm bg-opacity-95"
+        >
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-purple-700 flex items-center">
+            <span className="inline-block w-2 h-6 bg-purple-500 rounded mr-3"></span>
+            Provider Analysis
+          </h2>
+          <ProviderReviewAnalysis 
+            providerId="test-123"
+            initialReviews={initialReviews}
+          />
+        </motion.div>
+        
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="p-6 md:p-8 bg-white rounded-xl shadow-lg border border-purple-100 backdrop-blur-sm bg-opacity-95"
+        >
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-purple-700 flex items-center">
+            <span className="inline-block w-2 h-6 bg-purple-500 rounded mr-3"></span>
+            Empty State Test
+          </h2>
+          <ProviderReviewAnalysis 
+            providerId="test-456"
+            initialReviews={[]}
+          />
+        </motion.div>
+        
+        {/* Footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="text-center text-purple-500 text-sm mt-12"
+        >
+          <p>© 2025 Provider Review Dashboard</p>
+        </motion.div>
       </div>
     </div>
   );
-};
-
-export default TestReviewAnalysisPage;
+}

@@ -1,42 +1,40 @@
-// app/api/analysis/reviews/route.ts
 import { NextResponse } from 'next/server';
 import { analyzeProviderReviews } from '@/lib/review-analysis';
 
+export const maxDuration = 30;
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
-  // Accessing GOOGLE_API_KEY on the server-side
-  const googleApiKey = process.env.GOOGLE_API_KEY;
-  console.log('GOOGLE_API_KEY (server-side):', googleApiKey ? 'Present' : 'Not Found');
-
-  // Accessing NEXT_PUBLIC_GEMINI_API_KEY on the server-side
-  const nextPublicGeminiApiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-  console.log('NEXT_PUBLIC_GEMINI_API_KEY (server-side):', nextPublicGeminiApiKey ? 'Present' : 'Not Found');
-
   try {
-    const { reviews } = await req.json();
+    const apiKey = process.env.GOOGLE_API_KEY;
+    if (!apiKey) throw new Error('GOOGLE_API_KEY not set');
 
-    if (!reviews || !Array.isArray(reviews) || reviews.length === 0) {
-      return NextResponse.json(
-        { error: 'Valid reviews array is required' },
-        { status: 400 }
-      );
+    const { reviews } = await req.json();
+    
+    if (!Array.isArray(reviews)) {
+      return NextResponse.json({ error: 'Invalid request format' }, { status: 400 });
     }
 
-    // Convert string dates to Date objects
-    const parsedReviews = reviews.map(review => ({
-      ...review,
-      date: new Date(review.date)
+    const parsedReviews = reviews.map((r: any) => ({
+      content: r.content,
+      rating: r.rating ? Number(r.rating) : undefined,
+      date: new Date(r.date).toISOString(),
+      reviewerId: r.reviewerId || `anon-${Date.now()}`,
     }));
 
-    const analysisResults = await analyzeProviderReviews(parsedReviews);
-
+    const { aggregate, individual } = await analyzeProviderReviews(parsedReviews, apiKey);
+    
     return NextResponse.json({
-      success: true,
-      analysis: analysisResults
+      analysis: {
+        aggregateResults: aggregate,
+        individualResults: individual
+      }
     });
+
   } catch (error: any) {
-    console.error('Review analysis error:', error);
+    console.error('Analysis error:', error);
     return NextResponse.json(
-      { error: 'Failed to analyze reviews', details: error.message || String(error) },
+      { error: error.message || 'Analysis failed' },
       { status: 500 }
     );
   }

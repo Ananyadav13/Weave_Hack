@@ -1,85 +1,77 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+// lib/review-analysis.ts
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// For server-side components and API routes
-export const serverGenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+export interface ReviewData {
+  content: string;
+  rating?: number;
+  date: string | Date;
+  reviewerId: string;
+}
 
-// Helper function to get the appropriate model based on context
-const getModel = () => {
-  return serverGenAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-};
+export interface SentimentAnalysisResult {
+  responseRating: number;
+  onTimeDeliveryRating: number;
+  qualityRating: number;
+  communicationRating: number;
+  sentimentScore: number;
+  keyStrengths: string[];
+  areasForImprovement: string[];
+  summary: string;
+}
 
-// Generic content generation function
-export async function generateContent(prompt: string) {
-  const model = getModel();
-  
-  try {
+export interface ReviewAnalysis extends SentimentAnalysisResult {
+  reviewId: string;
+  originalContent: string;
+}
+
+export async function analyzeProviderReviews(
+  reviews: ReviewData[],
+  apiKey: string
+): Promise<{ aggregate: SentimentAnalysisResult; individual: ReviewAnalysis[] }> {
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+
+  const analysisPromises = reviews.map(async (review) => {
+    const prompt = `Analyze this service review in depth:
+    "${review.content}"
+    ${review.rating ? `Rating: ${review.rating}/5` : ''}
+    
+    Provide JSON with:
+    - sentimentScore: 1-10
+    - responseRating: 1-10
+    - onTimeDeliveryRating: 1-10
+    - qualityRating: 1-10 
+    - communicationRating: 1-10
+    - keyStrengths: array
+    - areasForImprovement: array
+    - summary: string`;
+
     const result = await model.generateContent(prompt);
-    const response = await result.response;
-    return response.text();
-  } catch (error) {
-    console.error("Error generating content:", error);
-    throw error;
-  }
-}
+    const text = result.response.text();
+    
+    const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/);
+    const analysis: SentimentAnalysisResult = JSON.parse(jsonMatch ? jsonMatch[1] : text);
 
-// Skill analysis function
-export async function analyzeSkill(skillDescription: string) {
-  const model = getModel();
-  
-  const prompt = `
-    Analyze the following skill description and provide:
-    1. A categorization of this skill (technical, creative, business, etc.)
-    2. Suggested matching skills that would complement this one
-    3. Estimated learning time for beginners
-    4. Key applications of this skill
-    
-    Skill Description: ${skillDescription}
-  `;
-  
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  return response.text();
-}
+    return {
+      reviewId: review.reviewerId,
+      originalContent: review.content,
+      ...analysis
+    };
+  });
 
-// Review summarization function
-export async function summarizeReviews(reviews: string[]) {
-  const model = getModel();
+  const individualResults = await Promise.all(analysisPromises);
   
-  const reviewText = reviews.join("\n\n");
-  const prompt = `
-    Summarize the following reviews for a skill provider:
-    ${reviewText}
-    
-    Provide:
-    1. Overall sentiment (positive/negative/mixed)
-    2. Key strengths mentioned
-    3. Areas for improvement
-    4. Reliability score (1-10)
-  `;
-  
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  return response.text();
-}
+  // Calculate aggregate results
+  const aggregateResults: SentimentAnalysisResult = {
+    responseRating: individualResults.reduce((sum, r) => sum + r.responseRating, 0) / individualResults.length,
+    onTimeDeliveryRating: individualResults.reduce((sum, r) => sum + r.onTimeDeliveryRating, 0) / individualResults.length,
+    qualityRating: individualResults.reduce((sum, r) => sum + r.qualityRating, 0) / individualResults.length,
+    communicationRating: individualResults.reduce((sum, r) => sum + r.communicationRating, 0) / individualResults.length,
+    sentimentScore: individualResults.reduce((sum, r) => sum + r.sentimentScore, 0) / individualResults.length,
+    keyStrengths: Array.from(new Set(individualResults.flatMap(r => r.keyStrengths))).slice(0, 5),
+    areasForImprovement: Array.from(new Set(individualResults.flatMap(r => r.areasForImprovement))).slice(0, 5),
+    summary: 'Aggregate analysis of all reviews'
+  };
 
-// Skill suggestion function
-export async function generateSkillSuggestions(userProfile: any) {
-  const model = getModel();
-  
-  const prompt = `
-    Based on the following user profile, suggest 5 skills they might be interested in learning:
-    
-    Current skills: ${userProfile.skills.join(", ")}
-    Interests: ${userProfile.interests.join(", ")}
-    Career goals: ${userProfile.careerGoals}
-    
-    For each suggested skill, provide:
-    1. Name of the skill
-    2. Why it would be valuable for this user
-    3. How it connects to their existing skills or interests
-  `;
-  
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  return response.text();
+  return { aggregate: aggregateResults, individual: individualResults };
 }

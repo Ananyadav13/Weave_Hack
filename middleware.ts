@@ -12,38 +12,16 @@ const isPublicRoute = createRouteMatcher([
   "/marketplace"
 ]);
 
-// Routes that are exempt from onboarding redirect
-const bypassOnboardingCheck = createRouteMatcher([
-  "/onboarding(.*)", // Onboarding routes themselves
-  "/api/onboarding(.*)", // Onboarding API routes
-  "/sign-out(.*)" // Sign-out routes
-]);
-
 export default clerkMiddleware(async (auth, req) => {
+  // If user is signed in but accessing the sign-in or sign-up page, redirect to /
+  if (auth.userId && (req.nextUrl.pathname === '/sign-in' || req.nextUrl.pathname === '/sign-up')) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
+  
   // Check if the route is public
   if (!isPublicRoute(req)) {
     // Protect non-public routes
     await auth.protect();
-    
-    // After successful authentication, check if onboarding is complete
-    const user = auth.user;
-    
-    // Skip onboarding check for onboarding-related routes
-    if (!bypassOnboardingCheck(req)) {
-      // Check if user has completed onboarding (stored in publicMetadata)
-      const onboardingComplete = user?.publicMetadata?.onboardingComplete;
-      
-      // If onboarding is not complete, redirect to onboarding
-      if (user && !onboardingComplete) {
-        const onboardingUrl = new URL('/onboarding', req.url);
-        return NextResponse.redirect(onboardingUrl);
-      }
-    }
-  }
-  
-  // If user is signed in but accessing the sign-in or sign-up page, redirect to /
-  if (auth.userId && (req.nextUrl.pathname === '/sign-in' || req.nextUrl.pathname === '/sign-up')) {
-    return NextResponse.redirect(new URL('/', req.url));
   }
   
   return NextResponse.next();

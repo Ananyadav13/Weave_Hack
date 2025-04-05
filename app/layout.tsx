@@ -42,25 +42,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-
-    <ClerkProvider>
-    <ThemeProvider>
-    
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ClerkLoading>
-      <ClerkLoadingComponent />
-    </ClerkLoading>
-    <Navbar/>
-        {children}
+        <ClerkProvider>
+          <ThemeProvider>
+            <ClerkLoading>
+              <ClerkLoadingComponent />
+            </ClerkLoading>
+            <Navbar/>
+            {children}
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
-
     </html>
- 
-    </ThemeProvider>
-    </ClerkProvider>
-
   );
 }

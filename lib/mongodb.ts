@@ -1,20 +1,20 @@
 // lib/mongodb.ts
-import { MongoClient } from 'mongodb';
+import { MongoClient, GridFSBucket } from 'mongodb';
 
 if (!process.env.MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable');
+  throw new Error('Please add your MongoDB URI to .env.local');
 }
 
 const uri = process.env.MONGODB_URI;
 const options = {};
 
-let client;
+let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === 'development') {
   // In development mode, use a global variable so that the value
   // is preserved across module reloads caused by HMR (Hot Module Replacement).
-  const globalWithMongo = global as typeof globalThis & {
+  let globalWithMongo = global as typeof globalThis & {
     _mongoClientPromise?: Promise<MongoClient>;
   };
 
@@ -30,3 +30,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export default clientPromise;
+
+// Helper function to get GridFS bucket
+export async function getGridFS(bucketName: string = 'uploads'): Promise<GridFSBucket> {
+  const client = await clientPromise;
+  const db = client.db(process.env.MONGODB_DB_NAME || 'portfolio');
+  return new GridFSBucket(db, { bucketName });
+}

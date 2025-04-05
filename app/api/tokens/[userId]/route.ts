@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db/mongodb';
+import dbConnect from '@/lib/mongodb';
 import Token from '@/lib/models/token';
 
 export async function GET(request: Request, { params }: { params: { userId: string } }) {

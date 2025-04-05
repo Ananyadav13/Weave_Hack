@@ -37,7 +37,7 @@ export function Navbar() {
   }, []);
 
   const navLinks = [
-    { title: "Dashboard", href: "/" },
+    { title: "Dashboard", href: "/dashboard" },
     { title: "Request Skill", href: "/request" },
     { title: "Search Skills", href: "/marketplace" },
     { title: "Messages", href: "/gemini" },

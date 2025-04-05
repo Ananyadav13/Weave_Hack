@@ -50,6 +50,11 @@ export default function SkillsForm() {
   const [skillLevel, setSkillLevel] = useState('Intermediate');
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+const [errorMessage, setErrorMessage] = useState('');
+const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+
   const [currentProject, setCurrentProject] = useState({
     name: '',
     description: '',
@@ -115,13 +120,16 @@ export default function SkillsForm() {
           id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
           name: file.name,
           file: file,
-          preview: imageUrl
+          preview: imageUrl,
+          size: file.size,
+          contentType: file.type
         });
       });
       
       setProjectImages([...projectImages, ...newImages]);
     }
   };
+  
 
   const handleRemoveProjectImage = (id: string) => {
     const imageToRemove = projectImages.find(img => img.id === id);
@@ -146,6 +154,7 @@ export default function SkillsForm() {
       setProjectImages([]);
     }
   };
+  
 
   const handleRemoveProject = (id: string) => {
     // Revoke object URLs for images before removing the project
@@ -159,39 +168,63 @@ export default function SkillsForm() {
     }
     setProjects(projects.filter(project => project.id !== id));
   };
-
   const handleNext = async () => {
     if (step < 4) {
       setStep(step + 1);
       setProgress(step === 1 ? 50 : step === 2 ? 75 : 100);
     } else {
       try {
-        // First, save the skills
+        setIsSubmitting(true);
+        
+        // First, save the skills data
+        const skillsData = skills.map(skill => ({
+          id: skill.id,
+          name: skill.name,
+          level: skill.level,
+          certificates: skill.certificates.map(cert => ({
+            id: cert.id,
+            name: cert.name,
+            uploaded: cert.uploaded
+          }))
+        }));
+        
         const skillsResponse = await fetch('/api/onboarding/skills', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ skills })
+          body: JSON.stringify({ skills: skillsData })
         });
         
         if (!skillsResponse.ok) {
           throw new Error('Failed to save skills');
         }
         
-        // Save the projects
+        // Save the project data
+        const projectsData = projects.map(project => ({
+          id: project.id,
+          name: project.name,
+          description: project.description,
+          technologies: project.technologies,
+          images: project.images.map(img => ({
+            id: img.id,
+            name: img.name
+            // We'll upload and update the fileId separately
+          }))
+        }));
+        
         const projectsResponse = await fetch('/api/onboarding/projects', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ projects })
+          body: JSON.stringify({ projects: projectsData })
         });
         
         if (!projectsResponse.ok) {
           throw new Error('Failed to save projects');
         }
         
-        // Upload certificates if they exist
+        // Upload certificates
         for (const skill of skills) {
           for (const cert of skill.certificates) {
-            if (cert.file) {
+            if (cert.file && !cert.uploaded) {
               const formData = new FormData();
               formData.append('file', cert.file);
               formData.append('skillId', skill.id);
@@ -204,11 +237,14 @@ export default function SkillsForm() {
               if (!certResponse.ok) {
                 throw new Error('Failed to upload certificate');
               }
+              
+              // Mark as uploaded
+              cert.uploaded = true;
             }
           }
         }
         
-        // Upload project images if they exist
+        // Upload project images
         for (const project of projects) {
           for (const image of project.images) {
             if (image.file) {
@@ -224,6 +260,11 @@ export default function SkillsForm() {
               if (!imageResponse.ok) {
                 throw new Error('Failed to upload project image');
               }
+              
+              const imageData = await imageResponse.json();
+              
+              // Store the MongoDB fileId for later retrieval
+              image.fileId = imageData.fileId;
             }
           }
         }
@@ -237,15 +278,22 @@ export default function SkillsForm() {
           throw new Error('Failed to complete onboarding');
         }
         
-        // Redirect to dashboard after successful completion
-        window.location.href = "/dashboard";
+        // Show success message
+        setShowSuccessMessage(true);
+        
+        // Redirect to dashboard after 2 seconds
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 2000);
+        
       } catch (error) {
         console.error('Error during onboarding:', error);
-        // Handle error (show error message to user)
+        setErrorMessage('An error occurred while saving your profile. Please try again.');
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
-
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1);
@@ -631,13 +679,22 @@ export default function SkillsForm() {
             <div></div>
           )}
           <Button 
-            onClick={handleNext} 
-            className="bg-purple-600 hover:bg-purple-700"
-            disabled={step === 1 && skills.length === 0}
-          >
-            {step === 4 ? 'Complete' : 'Continue'} 
-            <ChevronRight className="ml-1 h-4 w-4" />
-          </Button>
+  onClick={handleNext} 
+  className="bg-purple-600 hover:bg-purple-700"
+  disabled={(step === 1 && skills.length === 0) || isSubmitting}
+>
+  {isSubmitting ? (
+    <>
+      <span className="animate-spin mr-1">◌</span>
+      Saving...
+    </>
+  ) : (
+    <>
+      {step === 4 ? 'Complete' : 'Continue'} 
+      <ChevronRight className="ml-1 h-4 w-4" />
+    </>
+  )}
+</Button>
         </CardFooter>
       </Card>
     </div>

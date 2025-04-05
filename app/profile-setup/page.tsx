@@ -1,12 +1,11 @@
 "use client"
 
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Coins } from 'lucide-react';
 
 const SkillExchangePage = () => {
   const [completionPercentage,] = useState(60);
@@ -83,7 +82,7 @@ const SkillExchangePage = () => {
           <motion.div variants={itemVariants}>
             <h2 className="text-xl font-bold text-gray-800 mb-4"> What&apos;s your time worth?</h2>
             <p className="text-gray-700 mb-6">
-              Experts on Skill Exchange charge between $10 and $200 per hour. To help you set a fair rate, let&apos;s compare your hourly rate to common services and products.
+              Experts on Skill Exchange charge between <span className="inline-flex items-center"><Coins size={16} className="mr-1" />10</span> and <span className="inline-flex items-center"><Coins size={16} className="mr-1" />200</span> per hour. To help you set a fair rate, let&apos;s compare your hourly rate to common services and products.
             </p>
             
             {/* Image placeholder */}
@@ -110,8 +109,12 @@ const SkillExchangePage = () => {
                   className="mb-2"
                 />
                 <div className="flex justify-between mt-2">
-                  <span className="text-sm font-medium text-gray-700">$10</span>
-                  <span className="text-sm font-medium text-gray-700">$200</span>
+                  <span className="text-sm font-medium text-gray-700 inline-flex items-center">
+                    <Coins size={14} className="mr-1" />10
+                  </span>
+                  <span className="text-sm font-medium text-gray-700 inline-flex items-center">
+                    <Coins size={14} className="mr-1" />200
+                  </span>
                 </div>
               </div>
             </div>
@@ -126,18 +129,24 @@ const SkillExchangePage = () => {
                 <div className="flex justify-between">
                   <div>
                     <p className="text-blue-600 text-sm mb-1">Hourly rate for a personal chef</p>
-                    <p className="text-gray-800 font-medium">$20-$50</p>
+                    <p className="text-gray-800 font-medium inline-flex items-center">
+                      <Coins size={16} className="mr-1" />20-<Coins size={16} className="mr-1" />50
+                    </p>
                   </div>
                   <div>
                     <p className="text-blue-600 text-sm mb-1">Price of a one-hour massage</p>
-                    <p className="text-gray-800 font-medium">$60-$120</p>
+                    <p className="text-gray-800 font-medium inline-flex items-center">
+                      <Coins size={16} className="mr-1" />60-<Coins size={16} className="mr-1" />120
+                    </p>
                   </div>
                 </div>
               </div>
               
               <div>
                 <p className="text-blue-600 text-sm mb-1">Average cost of a video game</p>
-                <p className="text-gray-800 font-medium">$50</p>
+                <p className="text-gray-800 font-medium inline-flex items-center">
+                  <Coins size={16} className="mr-1" />50
+                </p>
               </div>
             </div>
           </motion.div>

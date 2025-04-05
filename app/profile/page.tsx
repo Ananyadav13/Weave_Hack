@@ -9,8 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation"; 
+
 
 export default function ProfilePage() {
+ // Import useRouter
+  
+ const router = useRouter();
+ 
   const { user } = useUser(); // Fetch user data from Clerk
   const [completionPercentage] = useState<number>(33);
   const [mounted, setMounted] = useState<boolean>(false);
@@ -172,6 +178,7 @@ export default function ProfilePage() {
             <motion.div 
               whileHover={{ y: -2, transition: { duration: 0.2 } }}
               className="p-5 relative cursor-pointer group"
+              onClick={() => router.push("/profile-setup")}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:via-indigo-500/5 group-hover:to-purple-500/5 dark:group-hover:from-blue-500/10 dark:group-hover:via-indigo-500/10 dark:group-hover:to-purple-500/10 transition-all duration-300 z-0"></div>
               <div className="relative z-10 flex items-center justify-between">

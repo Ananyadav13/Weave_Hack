@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Menu, X, Search, Bell, User, LogOut, UserCircle, Moon, Sun } from "lucide-react";
+import { Menu, X, Search, Bell, LogOut, UserCircle, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -40,7 +40,7 @@ export function Navbar() {
     { title: "Dashboard", href: "/" },
     { title: "Request Skill", href: "/request" },
     { title: "Search Skills", href: "/marketplace" },
-    { title: "Messages", href: "#" },
+    { title: "Messages", href: "/gemini" },
   ];
 
   return (

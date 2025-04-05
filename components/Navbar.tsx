@@ -10,10 +10,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth, SignInButton, UserButton } from "@clerk/nextjs";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isSignedIn } = useAuth();
 
   // Handle scroll effect
   useEffect(() => {
@@ -94,21 +96,26 @@ export function Navbar() {
             </span>
           </motion.div>
           
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          {/* Clerk Authentication Button */}
+          {isSignedIn ? (
+            <UserButton 
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: "h-8 w-8"
+                }
+              }}
+            />
+          ) : (
+            <SignInButton mode="modal">
               <motion.button
                 whileHover={{ scale: 1.05 }}
-                className="flex items-center justify-center h-8 w-8 rounded-full bg-purple-100 text-purple-600"
+                className="px-3 py-1 text-sm font-medium bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
               >
-                <User className="h-4 w-4" />
+                Sign In
               </motion.button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </SignInButton>
+          )}
         </div>
 
         {/* Mobile menu button */}
@@ -150,7 +157,19 @@ export function Navbar() {
             <div className="flex items-center justify-between pt-4 pb-2">
               <Search className="h-5 w-5 text-gray-500" />
               <Bell className="h-5 w-5 text-gray-500" />
-              <User className="h-5 w-5 text-gray-500" />
+              
+              {/* Mobile Clerk Auth Button */}
+              {isSignedIn ? (
+                <UserButton 
+                  afterSignOutUrl="/"
+                />
+              ) : (
+                <SignInButton mode="modal">
+                  <Button size="sm" variant="default" className="bg-purple-600 hover:bg-purple-700">
+                    Sign In
+                  </Button>
+                </SignInButton>
+              )}
             </div>
           </div>
         </motion.div>

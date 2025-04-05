@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 import { Star, Clock, Shield, Users, Trophy, Grid, List} from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { Navbar } from '@/components/Navbar';
 import Image from 'next/image'
 
 export default function Dashboard() {
+  const { user } = useUser();
   const [, setMounted] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
  
@@ -19,7 +21,7 @@ export default function Dashboard() {
     setMounted(true);
   }, []);
 
-  const username = "Alex";
+  const username = user?.firstName || "User";
   const matches = [
     {
       id: 1,

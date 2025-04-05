@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,12 +8,14 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { useUser } from "@clerk/nextjs";
 
 export default function ProfilePage() {
-  const [completionPercentage, ] = useState<number>(33);
+  const { user } = useUser(); // Fetch user data from Clerk
+  const [completionPercentage] = useState<number>(33);
   const [mounted, setMounted] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -24,86 +25,135 @@ export default function ProfilePage() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
-  
+
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.5 }
-    }
+      transition: { duration: 0.5 },
+    },
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-sky-50 via-indigo-50 to-blue-100 dark:from-blue-950 dark:via-indigo-950 dark:to-slate-900">
+    <div className="min-h-screen pt-20 w-full bg-gradient-to-br from-sky-50 via-indigo-50 to-blue-100 dark:from-blue-950 dark:via-indigo-950 dark:to-slate-900">
       <div className="container max-w-3xl mx-auto py-12 px-4">
         <div className="flex justify-between items-center mb-12">
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">Your profile</h1>
+          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+            Your profile
+          </h1>
           {mounted && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               className="rounded-full h-10 w-10 p-0 hover:bg-blue-100/50 dark:hover:bg-blue-900/50 transition-all"
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
               <span className="sr-only">Toggle theme</span>
-              {theme === 'dark' ? 
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg> : 
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-700"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
-              }
+              {theme === "dark" ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-yellow-400"
+                >
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M12 2v2"></path>
+                  <path d="M12 20v2"></path>
+                  <path d="m4.93 4.93 1.41 1.41"></path>
+                  <path d="m17.66 17.66 1.41 1.41"></path>
+                  <path d="M2 12h2"></path>
+                  <path d="M20 12h2"></path>
+                  <path d="m6.34 17.66-1.41 1.41"></path>
+                  <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-indigo-700"
+                >
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                </svg>
+              )}
             </Button>
           )}
         </div>
-        
+
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
           className="space-y-8"
         >
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="relative backdrop-blur-md bg-white/30 dark:bg-slate-900/30 rounded-2xl p-6 shadow-lg overflow-hidden border border-white/20 dark:border-slate-800/30"
           >
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-blue-500/5 dark:to-indigo-500/5 z-0"></div>
             <div className="relative z-10 flex items-center justify-between">
               <div className="flex items-center gap-5">
-                <motion.div 
+                <motion.div
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300 }}
                   className="relative"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full blur-sm opacity-50 animate-pulse"></div>
                   <Avatar className="h-20 w-20 border-2 border-white dark:border-slate-800 relative">
-                    <AvatarImage src="/avatar-placeholder.jpg" alt="Profile" />
-                    <AvatarFallback className="bg-gradient-to-br from-blue-400 to-indigo-500 text-white">SW</AvatarFallback>
+                    <AvatarImage
+                      src={user?.imageUrl || "/avatar-placeholder.jpg"}
+                      alt={user?.fullName || "Profile"}
+                    />
+                    <AvatarFallback className="bg-gradient-to-br from-blue-400 to-indigo-500 text-white">
+                      {user?.firstName?.charAt(0) || "U"}
+                    </AvatarFallback>
                   </Avatar>
                 </motion.div>
                 <div>
-                  <h2 className="text-2xl font-bold text-blue-900 dark:text-blue-100">Sarah W.</h2>
+                  <h2 className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                    {user?.fullName || "User Name"}
+                  </h2>
                   <div className="flex items-center mt-1 text-blue-700 dark:text-blue-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    <span className="text-sm">San Francisco, CA</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="mr-1"
+                    >
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span className="text-sm">
+                      {user?.primaryAddress?.city || "Location not set"}
+                    </span>
                   </div>
                 </div>
               </div>
-              
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  className="rounded-full px-4 border-blue-300/50 dark:border-blue-700/50 hover:bg-blue-100/50 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300"
-                >
-                  Edit
-                </Button>
-              </motion.div>
+
+             
             </div>
           </motion.div>
           
@@ -112,31 +162,9 @@ export default function ProfilePage() {
             className="backdrop-blur-md bg-white/30 dark:bg-slate-900/30 rounded-2xl shadow-lg overflow-hidden border border-white/20 dark:border-slate-800/30"
           >
             {/* Become a Pro */}
-            <motion.div 
-              whileHover={{ y: -2, transition: { duration: 0.2 } }}
-              className="p-5 relative cursor-pointer group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:via-indigo-500/5 group-hover:to-purple-500/5 dark:group-hover:from-blue-500/10 dark:group-hover:via-indigo-500/10 dark:group-hover:to-purple-500/10 transition-all duration-300 z-0"></div>
-              <div className="relative z-10 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="bg-gradient-to-br from-blue-400 to-indigo-500 p-3 rounded-full text-white shadow-md">
-                    <User className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-blue-900 dark:text-blue-100">Become a Pro</h3>
-                    <p className="text-sm text-blue-600 dark:text-blue-300">Set your hourly rate and availability</p>
-                  </div>
-                </div>
-                <ChevronRight className="h-5 w-5 text-blue-400 dark:text-blue-500 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors" />
-              </div>
-              
-              <motion.div 
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 origin-left"
-                initial={{ scaleX: 0 }}
-                whileHover={{ scaleX: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.div>
+
+            
+          
             
             <Separator className="bg-gradient-to-r from-transparent via-blue-200/30 dark:via-blue-700/30 to-transparent" />
             
@@ -152,7 +180,7 @@ export default function ProfilePage() {
                     <Image className="h-5 w-5"/>
                   </div>
                   <div>
-                    <h3 className="font-medium text-blue-900 dark:text-blue-100">Create a profile</h3>
+                    <h3 className="font-medium text-blue-900 dark:text-blue-100">Edit your profile</h3>
                     <p className="text-sm text-blue-600 dark:text-blue-300">Showcase your skills, portfolio, and more</p>
                   </div>
                 </div>
@@ -166,6 +194,27 @@ export default function ProfilePage() {
                 transition={{ duration: 0.3 }}
               />
             </motion.div>
+          </motion.div>
+
+           {/* Badges */}
+           <motion.div 
+            variants={itemVariants}
+            className="backdrop-blur-md bg-white/30 dark:bg-slate-900/30 rounded-2xl p-6 shadow-lg border border-white/20 dark:border-slate-800/30"
+          >
+            <h3 className="text-xl font-semibold mb-6 text-blue-900 dark:text-blue-100 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-blue-500 dark:text-blue-400"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+              Badges
+            </h3>
+            
+            <div className="flex items-center gap-4 bg-blue-50/50 dark:bg-blue-900/20 p-4 rounded-xl">
+              <div className="bg-gradient-to-br from-amber-400 to-orange-500 p-3 rounded-full text-white shadow-md">
+                <Trophy className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-blue-800 dark:text-blue-200">You have 0 badges</p>
+                <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">Complete your profile to earn your first badge</p>
+              </div>
+            </div>
           </motion.div>
           
           {/* Trust and verification */}
@@ -230,26 +279,7 @@ export default function ProfilePage() {
             </div>
           </motion.div>
           
-          {/* Badges */}
-          <motion.div 
-            variants={itemVariants}
-            className="backdrop-blur-md bg-white/30 dark:bg-slate-900/30 rounded-2xl p-6 shadow-lg border border-white/20 dark:border-slate-800/30"
-          >
-            <h3 className="text-xl font-semibold mb-6 text-blue-900 dark:text-blue-100 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-blue-500 dark:text-blue-400"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
-              Badges
-            </h3>
-            
-            <div className="flex items-center gap-4 bg-blue-50/50 dark:bg-blue-900/20 p-4 rounded-xl">
-              <div className="bg-gradient-to-br from-amber-400 to-orange-500 p-3 rounded-full text-white shadow-md">
-                <Trophy className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-blue-800 dark:text-blue-200">You have 0 badges</p>
-                <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">Complete your profile to earn your first badge</p>
-              </div>
-            </div>
-          </motion.div>
+         
           
           {/* Save button */}
           <motion.div 

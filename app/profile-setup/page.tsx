@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 
 import React, { useState, useEffect } from 'react';
@@ -9,9 +9,9 @@ import { Progress } from '@/components/ui/progress';
 import { ChevronLeft } from 'lucide-react';
 
 const SkillExchangePage = () => {
-  const [completionPercentage, setCompletionPercentage] = useState(60);
+  const [completionPercentage,] = useState(60);
   const [rate, setRate] = useState(100);
-  const [mounted, setMounted] = useState(false);
+  const [, setMounted] = useState(false);
   
   useEffect(() => {
     setMounted(true);
@@ -81,9 +81,9 @@ const SkillExchangePage = () => {
           
           {/* What's your time worth? */}
           <motion.div variants={itemVariants}>
-            <h2 className="text-xl font-bold text-gray-800 mb-4">What's your time worth?</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-4"> What&apos;s your time worth?</h2>
             <p className="text-gray-700 mb-6">
-              Experts on Skill Exchange charge between $10 and $200 per hour. To help you set a fair rate, let's compare your hourly rate to common services and products.
+              Experts on Skill Exchange charge between $10 and $200 per hour. To help you set a fair rate, let&apos;s compare your hourly rate to common services and products.
             </p>
             
             {/* Image placeholder */}

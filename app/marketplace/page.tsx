@@ -1,180 +1,202 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Navbar } from '@/components/Navbar'; 
+import { useState } from "react";
+import { Navbar } from "@/components/Navbar"; // Now importing the separate Navbar component
+import { motion } from "framer-motion";
+import { Filter, Grid, List, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+// Sample marketplace data
+const marketplaceItems = [
+  {
+    id: 1,
+    title: "Website Redesign",
+    description: "Looking for an experienced designer to revamp our company website",
+    budget: "$1,000 - $2,500",
+    postedBy: "TechCorp Inc.",
+    rating: 4.8,
+    reviews: 156,
+    skills: ["UI/UX", "React", "Figma"]
+  },
+  {
+    id: 2,
+    title: "Mobile App Development",
+    description: "Need a developer to build an iOS food delivery application",
+    budget: "$3,000 - $5,000",
+    postedBy: "FoodFast",
+    rating: 4.5,
+    reviews: 89,
+    skills: ["Swift", "iOS", "API Integration"]
+  },
+  {
+    id: 3,
+    title: "Marketing Campaign",
+    description: "Seeking a marketing expert to plan and execute a product launch campaign",
+    budget: "$1,500 - $3,000",
+    postedBy: "NewStartup",
+    rating: 4.2,
+    reviews: 42,
+    skills: ["Digital Marketing", "Social Media", "Content Creation"]
+  },
+  {
+    id: 4,
+    title: "Logo Design",
+    description: "Need a modern, minimalist logo for a new fitness brand",
+    budget: "$250 - $500",
+    postedBy: "FitLife",
+    rating: 4.9,
+    reviews: 217,
+    skills: ["Graphic Design", "Branding", "Illustrator"]
+  },
+  {
+    id: 5,
+    title: "E-commerce Integration",
+    description: "Looking for help integrating payment systems into our online store",
+    budget: "$800 - $1,200",
+    postedBy: "ShopEasy",
+    rating: 4.7,
+    reviews: 103,
+    skills: ["Shopify", "Stripe", "JavaScript"]
+  },
+  {
+    id: 6,
+    title: "Content Writing",
+    description: "Need blog articles written for our tech website (10 articles)",
+    budget: "$500 - $1,000",
+    postedBy: "TechBlog",
+    rating: 4.4,
+    reviews: 76,
+    skills: ["Writing", "SEO", "Research"]
+  }
+];
 
 export default function Marketplace() {
-  const [selectedTab, setSelectedTab] = useState("all");
   const [viewMode, setViewMode] = useState("grid");
-
-  const routes = [
-    { name: "Dashboard", path: "/" },
-    { name: "Marketplace", path: "/marketplace" },
-    { name: "Requests", path: "/requests" },
-    { name: "Messages", path: "/messages" }
-  ];
-
-  const containerVariants = {
+  
+  const container = {
     hidden: { opacity: 0 },
-    visible: {
+    show: {
       opacity: 1,
-      transition: { staggerChildren: 0.05 }
+      transition: {
+        staggerChildren: 0.1
+      }
     }
   };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.4 }
-    }
+  
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
   };
-
-  const categories = [
-    "All", "Time", "Value", "Rating", "Category", "Technology", 
-    "Art & Design", "Personal Development", 
-    "Science & Engineering", "Business & Entrepreneurship"
-  ];
-
-  const skillCards = [
-    {
-      id: 1,
-      title: "Learn to play guitar",
-      instructor: "John Doe",
-      image: "/guitar.jpg",
-    },
-    {
-      id: 2,
-      title: "Learn to use Photoshop",
-      instructor: "Jane Smith",
-      image: "/photoshop.jpg",
-    },
-    {
-      id: 3,
-      title: "Learn to cook",
-      instructor: "Bob Johnson",
-      image: "/cooking.jpg",
-    },
-    {
-      id: 4,
-      title: "Learn to code",
-      instructor: "Sarah Davis",
-      image: "/coding.jpg",
-    },
-    {
-      id: 5,
-      title: "Learn to write poetry",
-      instructor: "Michael Miller",
-      image: "/poetry.jpg",
-    },
-    {
-      id: 6,
-      title: "Learn to do yoga",
-      instructor: "Emily Wilson",
-      image: "/yoga.jpg",
-    },
-    {
-      id: 7,
-      title: "Learn to invest in stocks",
-      instructor: "Chris Brown",
-      image: "/stocks.jpg",
-    },
-    {
-      id: 8,
-      title: "Learn to speak Spanish",
-      instructor: "Laura Taylor",
-      image: "/spanish.jpg",
-    },
-    {
-      id: 9,
-      title: "Learn to paint",
-      instructor: "Kevin White",
-      image: "/painting.jpg",
-    },
-    {
-      id: 10,
-      title: "Learn to make a website",
-      instructor: "Amanda Lee",
-      image: "/website.jpg",
-    }
-  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Replace the original header with Navbar component */}
-      <Navbar 
-        productName="Weave"
-        routes={routes}
-        userLoggedIn={true}
-        userInitials="JD"
-      />
-
-      {/* Adjust main content for navbar spacing */}
-      <main className="max-w-7xl mx-auto px-4 py-8 pt-24">
-        {/* Filter tabs */}
-        <div className="overflow-x-auto pb-4 scrollbar-hide">
-          <div className="flex gap-2 min-w-max">
-            {categories.map((category) => (
-              <Badge 
-                key={category}
-                variant={selectedTab === category.toLowerCase() ? "default" : "outline"}
-                className={`cursor-pointer px-4 py-2 rounded-full text-sm font-medium ${
-                  selectedTab === category.toLowerCase() 
-                    ? "bg-gray-900 text-white" 
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                }`}
-                onClick={() => setSelectedTab(category.toLowerCase())}
-              >
-                {category}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
-        {/* Section title and view toggle */}
-        <div className="flex justify-between items-center mt-8 mb-6">
-          <h2 className="text-2xl font-bold">Most recent</h2>
-          <Tabs value={viewMode} onValueChange={setViewMode} className="w-auto">
-            <TabsList className="bg-white">
-              <TabsTrigger value="grid" className="data-[state=active]:bg-gray-100">Grid</TabsTrigger>
-              <TabsTrigger value="list" className="data-[state=active]:bg-gray-100">List</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-
-        {/* Skills Grid */}
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
-        >
-          {skillCards.map((card) => (
-            <motion.div 
-              key={card.id}
-              variants={itemVariants}
-              className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+    <div className="min-h-screen bg-slate-50">
+      <Navbar />
+      
+      <main className="container mx-auto px-4 md:px-6 py-8 pt-24 lg:pt-28">
+        <div className="flex flex-col space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 sm:mt-8 gap-4">
+            <motion.h1 
+              className="text-xl sm:text-2xl font-bold text-gray-800"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
             >
-              <div className="h-40 bg-gray-100 relative">
-                <div className="w-full h-full bg-gray-200 overflow-hidden">
-                  <img 
-                    src="/api/placeholder/400/320" 
-                    alt={card.title} 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+              Marketplace
+            </motion.h1>
+            
+            <div className="flex items-center space-x-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Filter className="h-4 w-4" />
+                    <span className="hidden sm:inline">Filter</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>Newest First</DropdownMenuItem>
+                  <DropdownMenuItem>Highest Budget</DropdownMenuItem>
+                  <DropdownMenuItem>Best Rated</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              <div className="flex bg-white rounded-md border">
+                <Button
+                  variant={viewMode === "grid" ? "subtle" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  aria-label="Grid view"
+                >
+                  <Grid className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant={viewMode === "list" ? "subtle" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  aria-label="List view"
+                >
+                  <List className="h-4 w-4" />
+                </Button>
               </div>
-              <div className="p-4">
-                <h3 className="font-medium text-gray-900">{card.title}</h3>
-                <p className="text-sm text-gray-500 mt-1">Offered by: {card.instructor}</p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+            </div>
+          </div>
+          
+          <motion.div 
+            variants={container}
+            initial="hidden"
+            animate="show"
+            className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" : "flex flex-col space-y-4"}
+          >
+            {marketplaceItems.map((project) => (
+              <motion.div key={project.id} variants={item} className="h-full">
+                <Card className="h-full hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg">{project.title}</CardTitle>
+                    <CardDescription className="flex flex-col xs:flex-row xs:items-center text-xs sm:text-sm gap-1 xs:gap-0">
+                      <span>{project.postedBy}</span>
+                      <span className="flex items-center xs:ml-2">
+                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 mr-1" />
+                        {project.rating} ({project.reviews})
+                      </span>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs sm:text-sm text-gray-600">{project.description}</p>
+                    <div className="flex flex-wrap gap-1 mt-3">
+                      {project.skills.map((skill) => (
+                        <span 
+                          key={skill} 
+                          className="text-xs px-2 py-1 bg-purple-50 text-purple-600 rounded-full"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    <span className="text-xs sm:text-sm font-medium">{project.budget}</span>
+                    <Button size="sm" variant="outline" className="text-purple-600 border-purple-200 hover:bg-purple-50">
+                      Apply
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </main>
     </div>
   );

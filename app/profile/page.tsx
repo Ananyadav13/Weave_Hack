@@ -11,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 
 export default function ProfilePage() {
-  const [completionPercentage, setCompletionPercentage] = useState<number>(33);
+  const [completionPercentage, ] = useState<number>(33);
   const [mounted, setMounted] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
   
@@ -149,7 +149,7 @@ export default function ProfilePage() {
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="bg-gradient-to-br from-indigo-400 to-purple-500 p-3 rounded-full text-white shadow-md">
-                    <Image className="h-5 w-5" />
+                    <Image className="h-5 w-5"/>
                   </div>
                   <div>
                     <h3 className="font-medium text-blue-900 dark:text-blue-100">Create a profile</h3>

@@ -2,21 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
-import {  Star, Clock, Shield, Users, Trophy, Grid, List } from "lucide-react";
+import { Star, Clock, Shield, Users, Trophy, Grid, List} from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
 import { Progress } from "@/components/ui/progress";
-
 import { Navbar } from '@/components/Navbar';
+import Image from 'next/image'
 
 export default function Dashboard() {
-  const [mounted, setMounted] = useState(false);
+  const [, setMounted] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
- 
-  
  
   useEffect(() => {
     setMounted(true);
@@ -104,7 +101,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 text-gray-900">
+    <div className="min-h-screen w-full bg-gradient-to-b from-blue-50 to-purple-50 text-gray-900">
       {/* Navigation */}
       <Navbar 
         productName="Weave"
@@ -123,8 +120,8 @@ export default function Dashboard() {
           className="space-y-8 max-w-7xl mx-auto"
         >
           {/* Welcome Section */}
-          <motion.section variants={itemVariants} className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Good evening, {username}</h1>
+          <motion.section variants={itemVariants} className="mb-6 text-indigo-900">
+            <h1 className="text-3xl font-bold mb-2">Good evening, {username}</h1>
             <p className="text-gray-600">Here is what is happening in your world</p>
           </motion.section>
 
@@ -137,7 +134,7 @@ export default function Dashboard() {
                   variant={category === "All" ? "default" : "outline"}
                   size="sm"
                   className={`rounded-full px-4 py-2 ${
-                    category === "All" ? "bg-gray-900 text-white" : "bg-white text-gray-700"
+                    category === "All" ? "bg-indigo-600 text-white hover:bg-indigo-700" : "bg-white text-gray-700 hover:bg-gray-100"
                   }`}
                 >
                   {category}
@@ -149,8 +146,8 @@ export default function Dashboard() {
           {/* New Matches Section */}
           <motion.section variants={itemVariants}>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-800 flex items-center">
-                <Users className="mr-2 h-5 w-5 text-gray-600" />
+              <h2 className="text-xl font-bold text-indigo-900 flex items-center">
+                <Users className="mr-2 h-5 w-5 text-indigo-600" />
                 You have new matches!
               </h2>
               <div className="flex items-center space-x-2">
@@ -158,7 +155,7 @@ export default function Dashboard() {
                   variant={viewMode === 'grid' ? 'default' : 'outline'} 
                   size="sm"
                   onClick={() => setViewMode('grid')}
-                  className="rounded-md"
+                  className={`rounded-md ${viewMode === 'grid' ? 'bg-indigo-600 hover:bg-indigo-700' : ''}`}
                 >
                   <Grid className="h-4 w-4" />
                   <span className="ml-1">Grid</span>
@@ -167,7 +164,7 @@ export default function Dashboard() {
                   variant={viewMode === 'list' ? 'default' : 'outline'} 
                   size="sm"
                   onClick={() => setViewMode('list')}
-                  className="rounded-md"
+                  className={`rounded-md ${viewMode === 'list' ? 'bg-indigo-600 hover:bg-indigo-700' : ''}`}
                 >
                   <List className="h-4 w-4" />
                   <span className="ml-1">List</span>
@@ -179,18 +176,17 @@ export default function Dashboard() {
                 <motion.div 
                   key={match.id}
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200"
+                  className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
                 >
                   <div className="flex flex-col sm:flex-row">
                     <div className="sm:w-1/4 md:w-1/5">
                       <div className="relative h-full flex items-center justify-center aspect-square sm:aspect-auto overflow-hidden">
-                        {/* Changed from Avatar to direct img with square styling */}
-                        <img
-                          src={match.avatarUrl}
-                          alt={match.name}
-                          className="w-full h-full object-cover"
-                        />
-                        {/* Fallback can be handled with onError if needed */}
+                      <Image
+                      src={match.avatarUrl}
+                      alt={match.name}
+                      fill
+                      className="object-cover"
+                      />
                       </div>
                     </div>
                     <div className="p-5 flex-1 flex flex-col justify-between">
@@ -215,7 +211,7 @@ export default function Dashboard() {
                           whileTap={{ scale: 0.95 }}
                         >
                           <Button 
-                            className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-5"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-5"
                           >
                             Message
                           </Button>
@@ -230,8 +226,8 @@ export default function Dashboard() {
 
           {/* Pending Requests Section */}
           <motion.section variants={itemVariants} className="mt-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <Clock className="mr-2 h-5 w-5 text-gray-600" />
+            <h2 className="text-xl font-bold text-indigo-900 mb-4 flex items-center">
+              <Clock className="mr-2 h-5 w-5 text-indigo-600" />
               Pending requests
             </h2>
             <div className="space-y-4">
@@ -239,17 +235,21 @@ export default function Dashboard() {
                 <motion.div 
                   key={request.id}
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200"
+                  className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
                 >
                   <div className="flex flex-col sm:flex-row">
                     <div className="sm:w-1/4 md:w-1/5">
-                      <div className="h-full bg-gray-50 flex items-center justify-center p-6 aspect-square sm:aspect-auto">
+                      <div className="h-full bg-blue-50 flex items-center justify-center p-6 aspect-square sm:aspect-auto">
                         <div className="rounded-full bg-white p-4 shadow-sm">
-                          <img
-                            src={request.logoUrl}
-                            alt={request.skill}
-                            className="w-12 h-12 object-contain"
-                          />
+                          
+                  <div className="relative w-12 h-12">
+                    <Image
+                      src={request.logoUrl}
+                      alt={request.skill}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
                         </div>
                       </div>
                     </div>
@@ -270,7 +270,7 @@ export default function Dashboard() {
                           whileTap={{ scale: 0.95 }}
                         >
                           <Button 
-                            className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-5"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-5"
                           >
                             View
                           </Button>
@@ -285,8 +285,8 @@ export default function Dashboard() {
 
           {/* Reputation Section */}
           <motion.section variants={itemVariants} className="mt-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <Shield className="mr-2 h-5 w-5 text-gray-600" />
+            <h2 className="text-xl font-bold text-indigo-900 mb-4 flex items-center">
+              <Shield className="mr-2 h-5 w-5 text-indigo-600" />
               Reputation
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -295,14 +295,14 @@ export default function Dashboard() {
                   key={index}
                   whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 >
-                  <Card className="bg-white text-center border-gray-200 shadow-sm overflow-hidden">
+                  <Card className="bg-white text-center border-gray-100 shadow-sm overflow-hidden">
                     <CardContent className="pt-6">
                       <div className="flex justify-center mb-3">
-                        <div className="bg-gray-100 p-3 rounded-full text-gray-600">
+                        <div className="bg-purple-100 p-3 rounded-full text-indigo-600">
                           {stat.icon}
                         </div>
                       </div>
-                      <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
+                      <p className="text-2xl font-bold text-indigo-900">{stat.value}</p>
                       <p className="text-sm text-gray-600 mt-1">{stat.label}</p>
                     </CardContent>
                   </Card>
@@ -313,11 +313,11 @@ export default function Dashboard() {
 
           {/* Your Skills Section */}
           <motion.section variants={itemVariants} className="mt-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <Trophy className="mr-2 h-5 w-5 text-gray-600" />
+            <h2 className="text-xl font-bold text-indigo-900 mb-4 flex items-center">
+              <Trophy className="mr-2 h-5 w-5 text-indigo-600" />
               Your skills
             </h2>
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
               <div>
                 <div className="flex flex-wrap gap-3">
                   {userSkills.map((skill, index) => (
@@ -327,7 +327,7 @@ export default function Dashboard() {
                       whileTap={{ scale: 0.95 }}
                     >
                       <Badge
-                        className="bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-2 text-sm rounded-full"
+                        className="bg-purple-100 text-indigo-700 hover:bg-purple-200 px-4 py-2 text-sm rounded-full"
                       >
                         {skill}
                       </Badge>
@@ -337,7 +337,7 @@ export default function Dashboard() {
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <div className="flex justify-between items-center mb-3">
                     <p className="text-sm font-medium text-gray-700 flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-gray-600"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-indigo-600"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
                       75% profile completion
                     </p>
                   </div>
@@ -357,7 +357,7 @@ export default function Dashboard() {
                       whileTap={{ scale: 0.95 }}
                     >
                       <Button 
-                        className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-5"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-5"
                       >
                         Add skills
                       </Button>

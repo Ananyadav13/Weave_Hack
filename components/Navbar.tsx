@@ -1,167 +1,160 @@
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+"use client";
+
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Menu, X, Search, Bell, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Home,
-  Settings,
-  HelpCircle,
-  LogOut,
-  UserPlus,
-  LogIn,
-  CircleDollarSign // Using CircleDollarSign as replacement for Exchange
-} from "lucide-react";
 
-interface NavbarProps {
-  productName: string;
-  productIcon?: React.ReactNode;
-  routes: {
-    name: string;
-    path: string;
-  }[];
-  userLoggedIn?: boolean;
-  userAvatar?: string;
-  userInitials?: string;
-}
-
-export const Navbar = ({
-  productName,
-  productIcon = <CircleDollarSign className="h-6 w-6" />,
-  routes,
-  userLoggedIn = false,
-  userAvatar = "",
-  userInitials = "A"
-}: NavbarProps) => {
-  const pathname = usePathname();
+export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const navLinks = [
+    { title: "Dashboard", href: "/" },
+    { title: "Projects", href: "#" },
+    { title: "Marketplace", href: "/marketplace" },
+    { title: "Messages", href: "#" },
+  ];
 
   return (
     <motion.header
-      className={`fixed top-0 left-0 right-0 z-50 px-4 py-3 transition-all duration-200 ${
-        scrolled ? "bg-white/90 shadow-md backdrop-blur-sm dark:bg-gray-900/90" : "bg-white dark:bg-gray-900"
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        scrolled ? "bg-white shadow-md py-2" : "bg-white/80 backdrop-blur-sm py-4"
       }`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ type: "spring", stiffness: 100, damping: 20 }}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Link href="/" className="flex items-center space-x-2">
-            <motion.div
-              whileHover={{ rotate: 10 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              className="text-primary"
-            >
-              {productIcon}
-            </motion.div>
-            <motion.span
-              className="text-xl font-bold text-primary"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              {productName}
-            </motion.span>
-          </Link>
+      <div className="container mx-auto px-4 flex items-center justify-between">
+        {/* Logo */}
+        <motion.div 
+          className="flex items-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <span className="text-xl font-bold text-purple-600">Weave</span>
+        </motion.div>
 
-          <nav className="hidden md:flex items-center space-x-1">
-            {routes.map((route, index) => (
-              <Link href={route.path} key={route.path}>
-                <motion.div
-                  className={`relative px-3 py-2 text-sm rounded-md transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 ${
-                    pathname === route.path
-                      ? "text-primary font-medium"
-                      : "text-slate-600 dark:text-slate-300"
-                  }`}
-                  whileHover={{ scale: 1.05 }}
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index }}
-                >
-                  {route.name}
-                  {pathname === route.path && (
-                    <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                      layoutId="navbar-indicator"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                </motion.div>
-              </Link>
-            ))}
-          </nav>
+        {/* Desktop Navigation */}
+        <motion.nav 
+          className="hidden md:flex items-center space-x-1"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          {navLinks.map((link, index) => (
+            <motion.a
+              key={link.title}
+              href={link.href}
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-purple-600 rounded-md hover:bg-purple-50 transition-colors"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * index, duration: 0.5 }}
+              whileHover={{ scale: 1.05 }}
+            >
+              {link.title}
+            </motion.a>
+          ))}
+        </motion.nav>
+
+        {/* Right menu - desktop */}
+        <div className="hidden md:flex items-center space-x-2">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="relative"
+          >
+            <Search className="h-5 w-5 text-gray-500 hover:text-purple-600 cursor-pointer" />
+          </motion.div>
+          
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="relative"
+          >
+            <Bell className="h-5 w-5 text-gray-500 hover:text-purple-600 cursor-pointer" />
+            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-purple-500"></span>
+            </span>
+          </motion.div>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                className="flex items-center justify-center h-8 w-8 rounded-full bg-purple-100 text-purple-600"
+              >
+                <User className="h-4 w-4" />
+              </motion.button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
-        <div className="flex items-center space-x-4">
-          {userLoggedIn ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full" size="icon">
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src={userAvatar} alt="User avatar" />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {userInitials}
-                      </AvatarFallback>
-                    </Avatar>
-                  </motion.div>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Home className="mr-2 h-4 w-4" />
-                  Dashboard
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <HelpCircle className="mr-2 h-4 w-4" />
-                  Help & Support
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" className="hidden sm:flex">
-                <LogIn className="h-4 w-4 mr-2" />
-                Sign In
-              </Button>
-              <Button size="sm" className="hidden sm:flex">
-                <UserPlus className="h-4 w-4 mr-2" />
-                Sign Up
-              </Button>
-              <Button variant="ghost" size="icon" className="sm:hidden">
-                <LogIn className="h-5 w-5" />
-              </Button>
-            </div>
-          )}
+        {/* Mobile menu button */}
+        <div className="flex md:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="text-gray-700"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <motion.div
+          className="md:hidden bg-white"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="px-4 pt-2 pb-3 space-y-1 border-t">
+            {navLinks.map((link) => (
+              <motion.a
+                key={link.title}
+                href={link.href}
+                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-md"
+                whileHover={{ x: 5 }}
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                {link.title}
+              </motion.a>
+            ))}
+            <div className="flex items-center justify-between pt-4 pb-2">
+              <Search className="h-5 w-5 text-gray-500" />
+              <Bell className="h-5 w-5 text-gray-500" />
+              <User className="h-5 w-5 text-gray-500" />
+            </div>
+          </div>
+        </motion.div>
+      )}
     </motion.header>
   );
-};
+}
